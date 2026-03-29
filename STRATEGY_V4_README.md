@@ -97,6 +97,6 @@ print(f"Score: {result['total_score']}/110 → {result['recommendation']}")
 
 ---
 
-**Desenvolvido:** 2024  
-**Versão:** 4.0  
+**Desenvolvido:** 2024
+**Versão:** 4.0
 **Status:** ✅ Pronto para produção

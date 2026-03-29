@@ -1,7 +1,9 @@
 """
 Quick test of app_lay_0x1.py without running Streamlit
 """
+
 import pandas as pd
+
 from strategy_v4 import Lay0x1StrategyV4
 
 print("Loading consolidated data...")

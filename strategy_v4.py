@@ -248,14 +248,26 @@ class Lay0x1StrategyV4:
 
         df = self.consolidated_data
 
-        # Calcula estatísticas por faixa de odd
-        stats = {"total_games": len(df), "lay_0x1_wins": int(df["Lay_0x1_Outcome"].sum()), "lay_0x1_winrate": float(df["Lay_0x1_Outcome"].mean()) * 100, "total_profit": float(df["Profit_Lay_0x1"].sum()), "avg_profit": float(df["Profit_Lay_0x1"].mean()), "by_odd_range": {}}
-
         # Por faixa de odd
+        by_odd_range: Dict[str, Dict] = {}
         for min_odd, max_odd in [(0, 2.5), (2.5, 3.5), (3.5, 5.0), (5.0, 10.0)]:
             subset = df[(df["Odd_A_Back"] >= min_odd) & (df["Odd_A_Back"] < max_odd)]
             if len(subset) > 0:
-                stats["by_odd_range"][f"{min_odd:.1f}-{max_odd:.1f}"] = {"count": len(subset), "winrate": float(subset["Lay_0x1_Outcome"].mean()) * 100, "profit": float(subset["Profit_Lay_0x1"].sum())}
+                by_odd_range[f"{min_odd:.1f}-{max_odd:.1f}"] = {
+                    "count": len(subset),
+                    "winrate": float(subset["Lay_0x1_Outcome"].mean()) * 100,
+                    "profit": float(subset["Profit_Lay_0x1"].sum()),
+                }
+
+        # Calcula estatísticas por faixa de odd
+        stats = {
+            "total_games": len(df),
+            "lay_0x1_wins": int(df["Lay_0x1_Outcome"].sum()),
+            "lay_0x1_winrate": float(df["Lay_0x1_Outcome"].mean()) * 100,
+            "total_profit": float(df["Profit_Lay_0x1"].sum()),
+            "avg_profit": float(df["Profit_Lay_0x1"].mean()),
+            "by_odd_range": by_odd_range,
+        }
 
         return stats
 
