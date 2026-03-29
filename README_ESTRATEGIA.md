@@ -18,7 +18,7 @@ Uma estratégia de apostas contra o resultado específico **0x1** (visitante gan
 
 - **Você ganha se:** O resultado for QUALQUER COISA menos 0x1
   - Exemplos: 1x0, 1x1, 2x0, 2x1, 3x0, 0x0, etc.
-  
+
 - **Você perde se:** O resultado for EXATAMENTE 0x1
   - Probabilidade histórica: ~7.5%
 
@@ -145,11 +145,11 @@ Para um jogo do dia, você precisa de:
 
 1. **Odd do Visitante** (Vitória simples Away)
    - Onde encontrar: Betfair, Bet365, etc.
-   
+
 2. **xG do Visitante** (Expected Goals)
    - Onde encontrar: Understat, Wyscout, Stats Bomb
    - Fórmula: Histórico do time + estatísticas da temporada
-   
+
 3. **Eficiência do Visitante** (opcional)
    - Cálculo: (Gols / xG) × 100
 

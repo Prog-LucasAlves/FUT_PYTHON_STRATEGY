@@ -155,13 +155,13 @@ COMO USAR
    ───────────────────────
    cd d:\Sports\FUT_PYTHON_STRATEGY
    streamlit run app_lay_0x1.py
-   
+
    Abra: http://localhost:8501
 
 2. VALIDAR UM JOGO:
    ─────────────────
    from validate_entry import Lay0x1Validator
-   
+
    validator = Lay0x1Validator()
    result = validator.validate_match(
        home="Time A",

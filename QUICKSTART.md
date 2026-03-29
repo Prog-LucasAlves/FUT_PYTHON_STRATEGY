@@ -104,7 +104,7 @@ validator.validate_match(
 
 **Score:** 20/110 → EVITAR 🔴
 
-**Por quê?** 
+**Por quê?**
 - Odd baixa (5 pts) + xG alto (5 pts) + Eficiência alta (10 pts) = Risco alto
 
 ---
@@ -113,7 +113,7 @@ validator.validate_match(
 
 **Win Rate por Faixa de Odds:**
 - Odds > 5.0: **96.7%** ✅✅ (MELHOR)
-- Odds 3.5-5.0: **93.8%** ✅ 
+- Odds 3.5-5.0: **93.8%** ✅
 - Odds 2.5-3.5: **90.7%** ✅
 - Odds 2.0-2.5: **89.5%** ⚠️
 - Odds < 2.0: **86.5%** ⚠️ (PIOR)
@@ -123,7 +123,7 @@ validator.validate_match(
 - xG 1.0-1.5: **100%** ✅✅ (MELHOR)
 - xG 0.5-1.0: **78.6%** ⚠️ (PIOR)
 
-**Conclusão:** 
+**Conclusão:**
 - **Prefira odds altas + xG baixo** = Segurança máxima (96-100%)
 - **Evite odds baixas + xG alto** = Risco elevado (78.6%)
 
@@ -228,7 +228,7 @@ R: Use 70% do valor estimated como conservative. Revise com dados reais.
 ## 🚨 Disclaimer
 
 - Apostas envolvem risco financeiro real
-- Histórico não garante resultados futuros  
+- Histórico não garante resultados futuros
 - Educação, não recomendação de apostas
 - Sempre jogue responsavelmente
 

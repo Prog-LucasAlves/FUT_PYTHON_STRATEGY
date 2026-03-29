@@ -84,7 +84,7 @@ PROJECT ROOT: d:\Sports\FUT_PYTHON_STRATEGY
    ├─ Heatmaps
    ├─ Filtros customizáveis
    └─ Download de dados
-   
+
    Usar: streamlit run app_lay_0x1.py
 
 2. validate_entry.py (9.8 KB)
@@ -94,7 +94,7 @@ PROJECT ROOT: d:\Sports\FUT_PYTHON_STRATEGY
    ├─ 3 critérios: Odds, xG, Eficiência
    ├─ Análise de histórico similar
    └─ Recomendações automáticas
-   
+
    Usar: from validate_entry import Lay0x1Validator
 
 3. dados_betfair_atualizado.csv
@@ -103,7 +103,7 @@ PROJECT ROOT: d:\Sports\FUT_PYTHON_STRATEGY
    ├─ Dados originais + 13 novas métricas
    ├─ Lay_0x1_Result (WIN/LOSS)
    └─ Lay_0x1_Profit (lucro processado)
-   
+
    Usar: pandas.read_csv() com sep=';'
 
 4. analise_combinada.csv
@@ -112,7 +112,7 @@ PROJECT ROOT: d:\Sports\FUT_PYTHON_STRATEGY
    ├─ Lucro médio por combinação
    ├─ Histórico de cada faixa
    └─ Identifica MELHORES CENÁRIOS
-   
+
    Usar: Para estratégia otimizada
 
 ═══════════════════════════════════════════════════════════════════════════════

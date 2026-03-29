@@ -1,11 +1,14 @@
 import ast
 from datetime import datetime
+import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from strategy_v2 import Lay0x1StrategyV2
 
 st.set_page_config(page_title="Lay 0x1 Strategy Dashboard", layout="wide")
 
@@ -356,8 +359,8 @@ with tab6:
             df_day = pd.read_csv(arquivo_selecionado, sep=";")
             st.success(f"✅ {len(df_day)} jogo(s) carregado(s) para {data_selecionada}")
 
-            # Inicializar validador
-            validator = Lay0x1Validator()
+            # Inicializar stratégia (ao invés de validador)
+            strategy = Lay0x1StrategyV2()
 
             if len(df_day) > 0:
                 # Seletor de jogo
