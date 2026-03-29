@@ -1,5 +1,6 @@
-from strategy_v2 import Lay0x1StrategyV2
 import pandas as pd
+
+from strategy_v2 import Lay0x1StrategyV2
 
 strategy = Lay0x1StrategyV2()
 
@@ -11,11 +12,7 @@ print("TESTE - SCORES COM STRATEGY V2 (TODOS OS JOGOS DO DIA)")
 print("=" * 100)
 
 for idx, row in df_day.iterrows():
-    result = strategy.evaluate_score(
-        home=row["Home"],
-        away=row["Away"],
-        odd_away=float(row["Odd_A_Back"])
-    )
+    result = strategy.evaluate_score(home=row["Home"], away=row["Away"], odd_away=float(row["Odd_A_Back"]))
 
     print(f"\n{result['home']} x {result['away']}")
     print(f"  Odd: {result['odd_away']:.2f}")

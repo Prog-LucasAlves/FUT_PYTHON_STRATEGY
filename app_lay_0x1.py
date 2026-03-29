@@ -8,27 +8,32 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from strategy_v2 import Lay0x1StrategyV2
+from strategy_v4 import Lay0x1StrategyV4
 
 st.set_page_config(page_title="Lay 0x1 Strategy Dashboard", layout="wide")
 
 
 @st.cache_data
-def load_data():
-    df = pd.read_csv("data_total/dados_betfair_atualizado.csv", sep=";")
-    return df
+def load_consolidated_data():
+    """Carrega dados consolidados V4"""
+    try:
+        df = pd.read_csv("data_total/dados_consolidado_v2.csv", sep=";")
+        return df
+    except:
+        # Fallback para dados históricos
+        return pd.read_csv("data_total/dados_betfair_atualizado.csv", sep=";")
 
 
 @st.cache_data
 def load_analysis():
+    """Carrega análises pré-calculadas"""
     try:
         odds_analysis = pd.read_csv("data_total/analise_faixas_odds.csv", index_col=0)
         xg_analysis = pd.read_csv("data_total/analise_faixas_xg.csv", index_col=0)
         eff_analysis = pd.read_csv("data_total/analise_faixas_efficiency.csv", index_col=0)
-        combinada = pd.read_csv("data_total/analise_combinada.csv", index_col=[0, 1])
-        return odds_analysis, xg_analysis, eff_analysis, combinada
+        return odds_analysis, xg_analysis, eff_analysis
     except:
-        return None, None, None, None
+        return None, None, None
 
 
 def parse_goals_minutes(min_goals_str):
@@ -40,13 +45,14 @@ def parse_goals_minutes(min_goals_str):
     return []
 
 
-# Carregar dados
-df = load_data()
-odds_analysis, xg_analysis, eff_analysis, combinada = load_analysis()
+# Carregar dados consolidados
+df = load_consolidated_data()
+odds_analysis, xg_analysis, eff_analysis = load_analysis()
 
 # ===== HEADER =====
 st.title("⚽ Lay 0x1 Strategy Dashboard")
-st.markdown("**Estratégia de apostas contra o resultado 0x1 (visitante vitória por 1 gol)**")
+st.markdown("**Estratégia de apostas contra o resultado 0x1 (visitante com 0 gols)**")
+st.info("📊 Base: Dados consolidados Betfair + FootyStats | Estratégia V4")
 
 # ===== KPIs PRINCIPAIS =====
 col1, col2, col3, col4, col5 = st.columns(5)
@@ -56,15 +62,15 @@ with col1:
     st.metric("Total de Jogos", total_jogos)
 
 with col2:
-    win_rate = (df["Lay_0x1_Result"] == "WIN").sum() / len(df) * 100
-    st.metric("Win Rate", f"{win_rate:.1f}%", delta="Target: 70%+")
+    win_rate = (df["Lay_0x1_Outcome"] == 1).sum() / len(df) * 100
+    st.metric("Win Rate Lay 0x1", f"{win_rate:.1f}%", delta="Visitante 0 gols")
 
 with col3:
-    lucro_total = df["Lay_0x1_Profit"].sum()
+    lucro_total = df["Profit_Lay_0x1"].sum()
     st.metric("Lucro Total", f"{lucro_total:.2f}", delta=f"ROI: {lucro_total / len(df):.2f}")
 
 with col4:
-    lucratividade = (df["Lay_0x1_Profit"] > 0).sum() / len(df) * 100
+    lucratividade = (df["Profit_Lay_0x1"] > 1.0).sum() / len(df) * 100
     st.metric("Jogos Lucrativos", f"{lucratividade:.1f}%")
 
 with col5:
@@ -308,11 +314,16 @@ with tab6:
     - Score <50 → EVITAR
     """)
 
-    # Importar validador
+    # Inicializar estratégia V4 com cache
+    @st.cache_resource
+    def load_strategy():
+        return Lay0x1StrategyV4()
+    
+    strategy = load_strategy()
+    
+    # Carregar arquivos de jogos do dia
     import glob
     from pathlib import Path
-
-    from validate_entry import Lay0x1Validator
 
     # Carregar arquivos de jogos do dia
     day_files = sorted(glob.glob("data_day/dados_day_betfair_*.csv"))
@@ -358,9 +369,6 @@ with tab6:
         try:
             df_day = pd.read_csv(arquivo_selecionado, sep=";")
             st.success(f"✅ {len(df_day)} jogo(s) carregado(s) para {data_selecionada}")
-
-            # Inicializar stratégia (ao invés de validador)
-            strategy = Lay0x1StrategyV2()
 
             if len(df_day) > 0:
                 # Seletor de jogo
@@ -413,43 +421,23 @@ with tab6:
                         odd_away = st.number_input("Odd do Visitante (Away Back)", value=float(row["Odd_A_Back"]), min_value=1.0, max_value=100.0, step=0.1, key="odd_away")
 
                     with col2:
-                        odd_cs_0x1 = st.number_input("Odd Lay 0x1 (Back)", value=float(row["Odd_CS_0x1_Back"]) if "Odd_CS_0x1_Back" in row else 15.0, min_value=1.0, max_value=999.0, step=0.5, key="odd_0x1")
+                        odd_cs_0x1_lay = st.number_input("Odd CS 0x1 Lay", value=float(row["Odd_CS_0x1_Lay"]), min_value=1.0, max_value=999.0, step=0.5, key="odd_0x1_lay")
 
                     with col3:
-                        st.metric("Odd CS 0x1 Lay", f"{row['Odd_CS_0x1_Lay']:.1f}")
-
-                    # Estimativa de xG baseada em histórico
-                    col1, col2, col3 = st.columns(3)
-
-                    # Obter estimativas do histórico
-                    team_away = row["Away"]
-                    xg_from_history = validator.get_team_xg_estimate(team_away)
-                    eff_from_history = validator.get_team_efficiency_estimate(team_away)
-                    xg_fallback = min(2.0, round(1.5 / np.sqrt(odd_away), 2))
-
-                    # Verificar se time foi encontrado
-                    team_found = team_away in validator.team_away_stats
-                    found_marker = "✓ Histórico" if team_found else "⚠ Média Geral"
-
-                    with col1:
-                        st.info(f"**xG**: {xg_from_history:.2f} {found_marker}")
-                        xg_away_est = st.number_input("xG do Visitante", value=round(xg_from_history, 2), min_value=0.0, max_value=5.0, step=0.1, help=f"Ajuste conforme análise. Fallback (por odds): {xg_fallback}", key="xg_away")
-
-                    with col2:
-                        st.info(f"**Eficiência**: {eff_from_history:.1f}% {found_marker}")
-                        efficiency_away = st.slider("Eficiência do Visitante (%)", min_value=50, max_value=250, value=int(round(eff_from_history)), step=10, help="Percentual de conversão. Padrão: 100%", key="efficiency")
-
-                    with col3:
-                        st.metric("Matches (Away)", f"{validator.team_away_stats.get(team_away, {}).get('matches', '?')}")
-                        st.metric("Btts Lay", f"{row.get('Odd_BTTS_Yes_Lay', 'N/A')}")
+                        st.metric("Liga", row.get("League", "N/A"))
 
                     st.divider()
                     st.subheader("Validação Lay 0x1")
 
                     # Botão de validação
                     if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
-                        # Validar
-                        result = validator.validate_match(home=row["Home"], away=row["Away"], odd_away=odd_away, xg_away=xg_away_est, efficiency_away=efficiency_away)
+                        # Validar usando Strategy V4
+                        result = strategy.evaluate_score(
+                            home=row["Home"],
+                            away=row["Away"],
+                            odd_away=odd_away,
+                            odd_0x1_lay=odd_cs_0x1_lay
+                        )
 
                         # Exibir resultado
                         st.divider()
@@ -476,24 +464,23 @@ with tab6:
                             <div style="text-align: center; padding: 20px; background-color: {rec_color}40; border-radius: 10px;">
                                 <p style="margin: 0; font-size: 14px;">RECOMENDACAO</p>
                                 <p style="margin: 5px 0; font-weight: bold;">{result["recommendation"]}</p>
+                                <p style="margin: 5px 0; font-size: 12px;">{result["risk"]}</p>
                             </div>
                             """,
                                 unsafe_allow_html=True,
                             )
 
                         with col3:
-                            if result["historical"]["similar_matches"] > 0:
-                                wr = result["historical"]["win_rate"]
-                                st.markdown(
-                                    f"""
-                                <div style="text-align: center; padding: 20px; background-color: #00800040; border-radius: 10px;">
-                                    <p style="margin: 0; font-size: 14px;">WIN RATE SIMILAR</p>
-                                    <p style="margin: 5px 0; font-weight: bold;">{wr:.1f}%</p>
-                                    <p style="margin: 5px 0; font-size: 12px;">({int(result["historical"]["similar_matches"])} jogos)</p>
-                                </div>
-                                """,
-                                    unsafe_allow_html=True,
-                                )
+                            st.markdown(
+                                f"""
+                            <div style="text-align: center; padding: 20px; background-color: #00800040; border-radius: 10px;">
+                                <p style="margin: 0; font-size: 14px;">xG DO VISITANTE</p>
+                                <p style="margin: 5px 0; font-weight: bold;">{result["xg_away"]:.2f}</p>
+                                <p style="margin: 5px 0; font-size: 12px;">Odds: {result["odd_away"]:.2f}</p>
+                            </div>
+                            """,
+                                unsafe_allow_html=True,
+                            )
 
                         st.divider()
 
@@ -505,25 +492,22 @@ with tab6:
                         with col1:
                             st.markdown(f"""
                             **Odds do Visitante**
-                            - Valor: {result["analysis"]["odds"]["value"]:.2f}
-                            - Categoria: {result["analysis"]["odds"]["categoria"]}
-                            - Score: {result["analysis"]["odds"]["score"]}/40
+                            - Valor: {result["odd_away"]:.2f}
+                            - Score: {result["odd_score"]}/40
                             """)
 
                         with col2:
                             st.markdown(f"""
                             **xG do Visitante**
-                            - Valor: {result["analysis"]["xg"]["value"]:.2f}
-                            - Categoria: {result["analysis"]["xg"]["categoria"]}
-                            - Score: {result["analysis"]["xg"]["score"]}/40
+                            - Valor: {result["xg_away"]:.2f}
+                            - Score: {result["xg_score"]}/40
                             """)
 
                         with col3:
                             st.markdown(f"""
-                            **Eficiência**
-                            - Valor: {result["analysis"]["efficiency"]["value"]:.1f}%
-                            - Categoria: {result["analysis"]["efficiency"]["categoria"]}
-                            - Score: {result["analysis"]["efficiency"]["score"]}/30
+                            **Eficiência Defensiva**
+                            - Shots Avg: {result["shots_away_avg"]:.1f}
+                            - Score: {result["defense_score"]}/30
                             """)
 
                         st.divider()
@@ -531,40 +515,35 @@ with tab6:
                         # Resumo da decisão
                         st.subheader("Resumo da Decisão")
 
+                        st.info(f"""
+                        **Análise:** {result["rationale"]}
+                        
+                        Score: **{result["total_score"]}/110** → **{result["recommendation"]}** (Risco: {result["risk"]})
+                        """)
+
                         if result["total_score"] >= 90:
                             st.success("""
                             ✅ **ENTRAR COM CONFIANÇA**
 
                             Este jogo atende todos os critérios ideais para Lay 0x1.
-                            - Win rate esperado: 96-100%
-                            - Lucro esperado: 1.80-2.07 por jogo
                             - Risco: Baixo
+                            - Recomendação: Entrar com confiança
                             """)
                         elif result["total_score"] >= 70:
                             st.warning("""
                             🟡 **ENTRAR COM CUIDADO**
 
                             Este jogo é uma boa oportunidade mas com cuidado.
-                            - Win rate esperado: 90-95%
-                            - Lucro esperado: 1.84-2.64 por jogo
-                            - Risco: Moderado
-                            """)
-                        elif result["total_score"] >= 50:
-                            st.info("""
-                            ⚠️ **CONSIDERAR COM CAUTELA**
-
-                            Este jogo pode ser interessante mas requer análise adicional.
-                            - Win rate esperado: 80-90%
-                            - Stake recomendado: 1% do bankroll
+                            - Risco: Médio
+                            - Recomendação: Entrar com proteção adicional
                             """)
                         else:
                             st.error("""
                             🔴 **EVITAR**
 
                             Este jogo não atende aos critérios mínimos de entrada.
-                            - Win rate baixo
-                            - Risco elevado
-                            - Melhor esperar por melhores oportunidades
+                            - Risco: Alto
+                            - Recomendação: Melhor esperar por melhores oportunidades
                             """)
 
                         st.divider()
