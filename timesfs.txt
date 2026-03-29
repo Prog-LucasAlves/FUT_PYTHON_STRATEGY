@@ -1,0 +1,202 @@
+AC Milan
+AFC Bournemouth
+AVS
+Ajaccio
+Almería
+Alverca
+Amiens SC
+América Mineiro
+Angers SCO
+Arminia Bielefeld
+Arsenal
+Aston Villa
+Atalanta
+Athletic Club Bilbao
+Atlético GO
+Atlético Madrid
+Atlético Mineiro
+Atlético PR
+Augsburg
+Auxerre
+Avaí
+Bahia
+Bayer Leverkusen
+Bayern München
+Belenenses
+Benevento
+Benfica
+Boavista FC
+Bochum
+Bologna
+Bordeaux
+Borussia Dortmund
+Borussia M'gladbach
+Botafogo
+Bragantino
+Brentford
+Brescia
+Brest
+Brighton & Hove Albion
+Burnley
+CA Osasuna
+CD Aves
+CD Nacional
+CD Tondela
+CF Os Belenenses
+CS Marítimo
+CSA
+Cagliari
+Casa Pia
+Ceará
+Celta de Vigo
+Chapecoense
+Chelsea
+Clermont
+Como
+Corinthians
+Coritiba
+Cremonese
+Criciúma
+Crotone
+Cruzeiro
+Crystal Palace
+Cuiabá
+Cádiz
+Darmstadt 98
+Deportivo Alavés
+Dijon
+Eintracht Frankfurt
+Elche CF
+Empoli
+Estrela Amadora
+Everton
+FC Arouca
+FC Barcelona
+FC Vizela
+Famalicão
+Farense
+Fiorentina
+Flamengo
+Fluminense
+Fortaleza
+Fortuna Düsseldorf
+Freiburg
+Frosinone
+Fulham
+GD Chaves
+GD Estoril Praia
+Genoa
+Getafe CF
+Gil Vicente
+Girona FC
+Goiás
+Granada CF
+Greuther Fürth
+Grêmio
+Hamburger SV
+Heidenheim
+Hellas Verona
+Hertha BSC
+Hoffenheim
+Holstein Kiel
+Inter Milan
+Internacional
+Ipswich Town
+Juventude
+Juventus
+Köln
+Lazio
+Le Havre
+Lecce
+Leeds United
+Leganés
+Leicester City
+Lens
+Levante UD
+Lille
+Liverpool
+Lorient
+Luton Town
+Mainz 05
+Manchester City
+Manchester United
+Metz
+Mirassol
+Monaco
+Montpellier
+Monza
+Moreirense FC
+Nantes
+Napoli
+Newcastle United
+Nice
+Norwich City
+Nottingham Forest
+Nîmes
+Olympique Lyonnais
+Olympique Marseille
+PSG
+Paderborn
+Palmeiras
+Paris
+Parma
+Paços de Ferreira
+Pisa
+Portimonense
+Porto
+RB Leipzig
+RCD Espanyol
+RCD Mallorca
+Rayo Vallecano
+Real Betis
+Real Madrid
+Real Oviedo
+Real Sociedad
+Real Valladolid
+Reims
+Remo
+Rennes
+Rio Ave FC
+Roma
+SD Eibar
+SD Huesca
+SPAL
+Saint-Étienne
+Salernitana
+Sampdoria
+Santa Clara
+Santos
+Sassuolo
+Schalke 04
+Sevilla FC
+Sheffield United
+Southampton
+Spezia
+Sport Recife
+Sporting Braga
+Sporting CP
+St. Pauli
+Strasbourg
+Stuttgart
+Sunderland
+São Paulo
+Torino
+Tottenham Hotspur
+Toulouse
+Troyes
+UD Las Palmas
+Udinese
+Union Berlin
+Valencia CF
+Vasco da Gama
+Venezia
+Villarreal
+Vitória
+Vitória Guimarães
+Vitória Setúbal
+Watford
+Werder Bremen
+West Bromwich Albion
+West Ham United
+Wolfsburg
+Wolverhampton Wanderers
