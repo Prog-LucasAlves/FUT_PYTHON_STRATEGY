@@ -1,37 +1,36 @@
 """
-Lay 0x1 Strategy Dashboard - Versão 2 Reformulada
-Integra dados de footystats com scores reais
+Lay 0x1 Strategy Dashboard - Versão 3 com Dados Consolidados
+Integra Betfair + FootyStats em um único arquivo
 """
 
-import os
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import streamlit as st
-from strategy_v2 import Lay0x1StrategyV2
+
+from strategy_v3 import Lay0x1StrategyV3
 
 st.set_page_config(
-    page_title="Lay 0x1 Strategy Dashboard V2",
+    page_title="Lay 0x1 Strategy Dashboard V3",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ===== SIDEBAR =====
-st.sidebar.markdown("# ⚽ Lay 0x1 Strategy")
-st.sidebar.markdown("Análise de apostas contra o resultado 0x1")
+st.sidebar.markdown("# ⚽ Lay 0x1 Strategy V3")
+st.sidebar.markdown("Com dados consolidados: Betfair + FootyStats")
 st.sidebar.divider()
 
 # ===== HEADER PRINCIPAL =====
 st.title("⚽ Lay 0x1 Strategy Dashboard")
-st.markdown("**Validador de Entrada - Versão 2 com Dados Reais de FootyStats**")
+st.markdown("**Validador de Entrada - Versão 3 com Dados Consolidados Betfair + FootyStats**")
 
 
 # ===== CACHE =====
 @st.cache_data
 def load_strategy():
-    """Carrega estratégia uma vez"""
-    return Lay0x1StrategyV2()
+    """Carrega estratégia V3 com dados consolidados"""
+    return Lay0x1StrategyV3()
 
 
 @st.cache_data
@@ -251,7 +250,7 @@ if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
         st.markdown(
             f"""
         <div style="text-align: center; padding: 30px; background-color: #1f77b414; border-radius: 15px;">
-            <h1 style="margin: 0; font-size: 48px;">{result['total_score']}/110</h1>
+            <h1 style="margin: 0; font-size: 48px;">{result["total_score"]}/110</h1>
             <p style="margin: 10px 0; font-size: 18px; font-weight: bold;">Score Total</p>
             <p style="margin: 0; font-size: 14px;">Confiança: {score_pct:.1f}%</p>
         </div>
@@ -302,30 +301,30 @@ if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
         st.markdown(
             f"""
         **Odd do Visitante**
-        - Valor: {result['odd_away']:.2f}
-        - Categoria: {result['odd_cat']}
-        - Score: **{result['odd_score']}/40** ⭐
-        """
+        - Valor: {result["odd_away"]:.2f}
+        - Categoria: {result["odd_cat"]}
+        - Score: **{result["odd_score"]}/40** ⭐
+        """,
         )
 
     with col2:
         st.markdown(
             f"""
         **xG do Visitante**
-        - Valor: {result['xg_away']:.3f}
-        - Categoria: {result['xg_cat']}
-        - Score: **{result['xg_score']}/40** ⭐
-        """
+        - Valor: {result["xg_away"]:.3f}
+        - Categoria: {result["xg_cat"]}
+        - Score: **{result["xg_score"]}/40** ⭐
+        """,
         )
 
     with col3:
         st.markdown(
             f"""
         **Eficiência de Conversão**
-        - Valor: {result['efficiency_away']:.1f}%
-        - Categoria: {result['eff_cat']}
-        - Score: **{result['eff_score']}/30** ⭐
-        """
+        - Valor: {result["efficiency_away"]:.1f}%
+        - Categoria: {result["eff_cat"]}
+        - Score: **{result["eff_score"]}/30** ⭐
+        """,
         )
 
     # ===== INFORMAÇÕES DO TIME =====
@@ -360,15 +359,15 @@ if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
             f"""
         ## 🟢 ENTRAR COM CONFIANÇA
 
-        **Score: {result['total_score']}/110 ({score_pct:.1f}%)**
+        **Score: {result["total_score"]}/110 ({score_pct:.1f}%)**
 
         Este jogo atende os critérios ideais para Lay 0x1:
-        - ✅ Odd adequada ({result['odd_away']:.2f})
-        - ✅ xG baixo ({result['xg_away']:.3f})
-        - ✅ Eficiência positiva ({result['efficiency_away']:.1f}%)
+        - ✅ Odd adequada ({result["odd_away"]:.2f})
+        - ✅ xG baixo ({result["xg_away"]:.3f})
+        - ✅ Eficiência positiva ({result["efficiency_away"]:.1f}%)
 
         **Recomendação:** Entrar com Unit padrão
-        """
+        """,
         )
 
     elif result["total_score"] >= 70:
@@ -376,14 +375,14 @@ if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
             f"""
         ## 🟡 ENTRAR COM CUIDADO
 
-        **Score: {result['total_score']}/110 ({score_pct:.1f}%)**
+        **Score: {result["total_score"]}/110 ({score_pct:.1f}%)**
 
         Este jogo é uma boa oportunidade com cuidado moderado:
         - ⚠️ Alguns critérios parcialmente ótimos
         - ⚠️ Risco moderado
 
         **Recomendação:** Entrar com 50-75% de Unit
-        """
+        """,
         )
 
     else:
@@ -391,15 +390,15 @@ if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
             f"""
         ## 🔴 EVITAR
 
-        **Score: {result['total_score']}/110 ({score_pct:.1f}%)**
+        **Score: {result["total_score"]}/110 ({score_pct:.1f}%)**
 
         Este jogo não atende os critérios mínimos para Lay 0x1:
-        - ❌ Odd fraca ({result['odd_away']:.2f})
-        - ❌ xG alto ({result['xg_away']:.3f})
-        - ❌ Eficiência baixa ({result['efficiency_away']:.1f}%)
+        - ❌ Odd fraca ({result["odd_away"]:.2f})
+        - ❌ xG alto ({result["xg_away"]:.3f})
+        - ❌ Eficiência baixa ({result["efficiency_away"]:.1f}%)
 
         **Recomendação:** Esperar outros jogos
-        """
+        """,
         )
 
     # ===== DISCLAIMER =====
@@ -413,5 +412,5 @@ if st.button("🎯 Validar Entrada", use_container_width=True, type="primary"):
     Use por sua conta e risco e sempre respeite seu gerenciamento de banca.
 
     **Estratégia Lay 0x1:** Apostas contra o resultado específico 0x1 (derrota por 1 gol do mandante).
-    """
+    """,
     )
